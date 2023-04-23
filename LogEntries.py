@@ -45,7 +45,7 @@ class SSHLogEntry(metaclass=abc.ABCMeta):
         return self.get_ipv4() is not None
     
     def __repr__(self):
-        reprString = f'SSHLogEntry({self.timestamp},{self.process_name},[{self.pid}],{self._message})'
+        reprString = f'SSHLogEntry({self.timestamp},{self.process_name},[{self.pid}],{self.message})'
         return reprString
 
     def __eq__(self, other):
@@ -60,7 +60,7 @@ class SSHLogEntry(metaclass=abc.ABCMeta):
 class SSHLogEntryFailedPass(SSHLogEntry):
 
     def __init__(self, log):
-        super().__init__(self, log)
+        super().__init__(log)
         attributes = failedPasswordArgs(self.message)
         if not(attributes==None):
             self.address = attributes[0]
@@ -69,6 +69,7 @@ class SSHLogEntryFailedPass(SSHLogEntry):
     def validate(self):
         log_dict = parse_ssh_log(self._raw_log)
         attributes = failedPasswordArgs(log_dict['message'])
+        if attributes == None: return False
         return (self.timestamp == log_dict['timestamp']
                 and self.host == get_user_from_log(log_dict['message'])
                 and self.process_name == log_dict['process_name']
@@ -80,7 +81,7 @@ class SSHLogEntryFailedPass(SSHLogEntry):
 class SSHLogEntryAcceptedPass(SSHLogEntry):
 
     def __init__(self, log):
-        super().__init__(self, log)
+        super().__init__(log)
         attributes = acceptedPasswordArgs(self.message)
         if not(attributes==None):
             self.address = attributes[0]
@@ -89,6 +90,7 @@ class SSHLogEntryAcceptedPass(SSHLogEntry):
     def validate(self):
         log_dict = parse_ssh_log(self._raw_log)
         attributes = failedPasswordArgs(log_dict['message'])
+        if attributes == None: return False
         return (self.timestamp == log_dict['timestamp']
                 and self.host == get_user_from_log(log_dict['message'])
                 and self.process_name == log_dict['process_name']
@@ -100,7 +102,7 @@ class SSHLogEntryAcceptedPass(SSHLogEntry):
 class SSHLogEntryError(SSHLogEntry):
 
     def __init__(self, log):
-        super().__init__(self, log)
+        super().__init__(log)
         attributes = acceptedPasswordArgs(self.message)
         if not(attributes==None):
             self.address = attributes[0]
@@ -110,6 +112,7 @@ class SSHLogEntryError(SSHLogEntry):
     def validate(self):
         log_dict = parse_ssh_log(self._raw_log)
         attributes = errorArgs(log_dict['message'])
+        if attributes == None: return False
         return (self.timestamp == log_dict['timestamp']
                 and self.host == get_user_from_log(log_dict['message'])
                 and self.process_name == log_dict['process_name']
@@ -122,17 +125,11 @@ class SSHLogEntryError(SSHLogEntry):
 class SSHLogOther(SSHLogEntry):
 
     def __init__(self, log):
-        super().__init__(self,log)
+        super().__init__(log)
 
     def validate(self):
         return True
-        
-# class Ipv4:
-#     def __init__(self, ip):
-#         self.ip = ip
-        
-#     def __str__(self):
-#         return self.ip
+    
 
 if __name__ == '__main__':
     with open("logs.txt", 'r') as f:
