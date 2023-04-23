@@ -5,6 +5,7 @@ from ipaddress import AddressValueError
 from parse_log import parse_ssh_log
 from Utils import *
 import abc
+from datetime import datetime
 
 # Class that represents a single log
 class SSHLogEntry(metaclass=abc.ABCMeta):
@@ -62,9 +63,11 @@ class SSHLogEntryFailedPass(SSHLogEntry):
     def __init__(self, log):
         super().__init__(log)
         attributes = failedPasswordArgs(self.message)
-        if not(attributes==None):
-            self.address = attributes[0]
-            self.port = attributes[1]
+        self.address = attributes[0]
+        self.port = attributes[1]
+        # if not(attributes==None):
+        #     self.address = attributes[0]
+        #     self.port = attributes[1]
 
     def validate(self):
         log_dict = parse_ssh_log(self._raw_log)
@@ -83,9 +86,11 @@ class SSHLogEntryAcceptedPass(SSHLogEntry):
     def __init__(self, log):
         super().__init__(log)
         attributes = acceptedPasswordArgs(self.message)
-        if not(attributes==None):
-            self.address = attributes[0]
-            self.port = attributes[1]
+        self.address = attributes[0]
+        self.port = attributes[1]
+        # if not(attributes==None):
+        #     self.address = attributes[0]
+        #     self.port = attributes[1]
 
     def validate(self):
         log_dict = parse_ssh_log(self._raw_log)
@@ -104,10 +109,13 @@ class SSHLogEntryError(SSHLogEntry):
     def __init__(self, log):
         super().__init__(log)
         attributes = acceptedPasswordArgs(self.message)
-        if not(attributes==None):
-            self.address = attributes[0]
-            self.errNumber = attributes[1]
-            self.errMessage = attributes[2]
+        self.address = attributes[0]
+        self.errNumber = attributes[1]
+        self.errMessage = attributes[2]
+        # if not(attributes==None):
+        #     self.address = attributes[0]
+        #     self.errNumber = attributes[1]
+        #     self.errMessage = attributes[2]
 
     def validate(self):
         log_dict = parse_ssh_log(self._raw_log)
