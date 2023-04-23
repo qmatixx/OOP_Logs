@@ -1,6 +1,8 @@
-# First task
+    # First task
 import re, sys
+import ipaddress
 from parse_log import parse_ssh_log
+from Utils import *
 
 # Class that represemnts a single log
 class SSHLogEntry:
@@ -48,16 +50,46 @@ class SSHLogEntry:
         pattern = r'\b(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\b'
         match = re.search(pattern, self.message)
         if match:
-            return Ipv4(match.group(0))
+            return ipaddress.IPv4Address(match.group(0))
         else:
             return None
         
-class Ipv4:
-    def __init__(self, ip):
-        self.ip = ip
+class SSHLogEntryFailedPass(SSHLogEntry):
+
+    def __init__(self, log_dic):
+        super().__init__(self, log_dic)
+        attributes = failedPasswordArgs(log_dic['message'])
+        if not(attributes==None):
+            self.user = attributes[0]
+            self.address = attributes[1]
+            self.port = attributes[2]
+
+class SSHLogEntryAcceptedPass(SSHLogEntry):
+
+    def __init__(self, log_dic):
+        super().__init__(self, log_dic)
+        attributes = acceptedPasswordArgs(log_dic['message'])
+        if not(attributes==None):
+            self.user = attributes[0]
+            self.address = attributes[1]
+            self.port = attributes[2]
+
+class SSHLogEntryError(SSHLogEntry):
+
+    def __init__(self, log_dic):
+        super().__init__(self, log_dic)
+        attributes = acceptedPasswordArgs(log_dic['message'])
+        if not(attributes==None):
+            self.address = attributes[0]
+            self.number = attributes[1]
+            self.errMsg = attributes[2]
         
-    def __str__(self):
-        return self.ip
+# class Ipv4:
+#     def __init__(self, ip):
+#         self.ip = ip
+        
+#     def __str__(self):
+#         return self.ip
 
 if __name__ == '__main__':
     with open("logs.txt", 'r') as f:
