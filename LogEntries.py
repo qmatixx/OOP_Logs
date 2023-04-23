@@ -38,7 +38,7 @@ class SSHLogEntry(metaclass=abc.ABCMeta):
     
     @abc.abstractmethod
     def validate(self):
-        pass
+        print("Validating log: ", self.message)
 
     @property
     def has_ip(self):
@@ -67,6 +67,7 @@ class SSHLogEntryFailedPass(SSHLogEntry):
             self.port = attributes[1]
 
     def validate(self):
+        super().validate()
         log_dict = parse_ssh_log(self._raw_log)
         attributes = failedPasswordArgs(log_dict['message'])
         if attributes == None: return False
@@ -88,6 +89,7 @@ class SSHLogEntryAcceptedPass(SSHLogEntry):
             self.port = attributes[1]
 
     def validate(self):
+        super().validate()
         log_dict = parse_ssh_log(self._raw_log)
         attributes = failedPasswordArgs(log_dict['message'])
         if attributes == None: return False
@@ -110,6 +112,7 @@ class SSHLogEntryError(SSHLogEntry):
             self.errMessage = attributes[2]
 
     def validate(self):
+        super().validate()
         log_dict = parse_ssh_log(self._raw_log)
         attributes = errorArgs(log_dict['message'])
         if attributes == None: return False
@@ -128,6 +131,7 @@ class SSHLogOther(SSHLogEntry):
         super().__init__(log)
 
     def validate(self):
+        super().validate()
         return True
     
 
