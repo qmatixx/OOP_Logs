@@ -6,6 +6,7 @@ from parse_log import parse_ssh_log
 from Utils import *
 import abc
 from datetime import datetime
+from Journal import SSHLogJournal
 
 # Class that represents a single log
 class SSHLogEntry(metaclass=abc.ABCMeta):

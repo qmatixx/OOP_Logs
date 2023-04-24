@@ -93,6 +93,8 @@ if __name__ == "__main__":
         lines = f.readlines()
         for line in lines:
             journal.append(line)
+    for log in journal:
+        print(log.get_ipv4())
     # filteredData = journal.get_by_host('zhangyan')
     # for data in filteredData:
     #     print(data)
