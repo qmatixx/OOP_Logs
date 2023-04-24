@@ -1,9 +1,5 @@
 import re
-from Journal import SSHLogJournal
-from parse_log import parse_ssh_log
-from LogEntries import *
-from Journal import SSHLogJournal
-from Utils import *
+from Journal import *
 
 class SSHUser:
     def __init__(self, username, last_login_date):
@@ -17,6 +13,9 @@ class SSHUser:
         if match:
             return True
         return False
+    def updateLoginDate(self, date):
+        if (date > self.last_login_date):
+            self.last_login_date = date
     
 if __name__ == '__main__':
     journal = SSHLogJournal()
@@ -32,7 +31,7 @@ if __name__ == '__main__':
         while (flag and i < len(users)):
             u = users[i]
             if u.username == user.username:
-                u.last_login_date = user.last_login_date
+                u.updateLoginDate(user.last_login_date)
                 flag = False
             i+=1
         if (user.username != None and flag == True):
