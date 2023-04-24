@@ -26,19 +26,18 @@ if __name__ == '__main__':
             journal.append(line)
     users = []
     for entry in journal:
-        username = get_user_from_log(entry.message)
-        time = entry.timestamp
-        user = SSHUser(username, time)
-        if user.username in [u.username for u in users]:
-            for u in users:
-                if u.username == user.username:
-                    u.last_login_date = user.last_login_date
-        elif user.username != None:
+        user = SSHUser(entry.host, entry.timestamp)
+        flag = True
+        i = 0
+        while (flag and i < len(users)):
+            u = users[i]
+            if u.username == user.username:
+                u.last_login_date = user.last_login_date
+                flag = False
+            i+=1
+        if (user.username != None and flag == True):
             users.append(user)
-    for user in users:
-        print(user.username, user.last_login_date)
-        
-    # zip journal and users
+            
     list = journal.logList + users
     for sth in list:
         sth.validate()

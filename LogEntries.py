@@ -141,14 +141,3 @@ class SSHLogOther(SSHLogEntry):
     def validate(self):
         super().validate()
         return True
-    
-
-if __name__ == '__main__':
-    with open("logs.txt", 'r') as f:
-        lines = f.readlines()
-        for line in lines:
-            log = parse_ssh_log(line)
-            sshLogEntry_dict = SSHLogEntry(log)
-            print(sshLogEntry_dict)
-            print(sshLogEntry_dict.get_ipv4())
-            print()
