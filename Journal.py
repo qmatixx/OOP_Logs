@@ -17,23 +17,22 @@ class SSHLogJournal:
         return log in self.logList
     
     def append(self, raw_log):
-        factory_creator = self.get_creator(raw_log)
-        sshEntry = factory_creator.create_sshLog(raw_log)
+        sshEntry = Factory_Manager.create_log(raw_log)
         if sshEntry.validate():
             self.logList.append(sshEntry)
             return True
         return False
 
-    def get_creator(self, raw_log: str) -> Factory:
-        type = get_message_type(raw_log)
-        if type == "Authentication succeeded.":
-            return Factory_Accepted_Pass()
-        elif type == "Incorrect password.":
-            return Factory_Failed_Pass()
-        elif type == "Error.":
-            return Factory_Error()
-        else:
-            return Factory_Other()
+    # def get_creator(self, raw_log: str) -> Factory:
+    #     type = get_message_type(raw_log)
+    #     if type == "Authentication succeeded.":
+    #         return Factory_Accepted_Pass()
+    #     elif type == "Incorrect password.":
+    #         return Factory_Failed_Pass()
+    #     elif type == "Error.":
+    #         return Factory_Error()
+    #     else:
+    #         return Factory_Other()
         
     def get_by_host(self, key_host=None):
         return [entry for entry in self.logList if entry.host == key_host]
