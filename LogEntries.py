@@ -40,12 +40,14 @@ class SSHLogEntry(metaclass=abc.ABCMeta):
     
     @abc.abstractmethod
     def validate(self):
-        print("Validating log: ", self.message)
+        # print("Validating log: ", self.message)
+        pass
 
     @property
     def has_ip(self):
         return self.get_ipv4() is not None
     
+    # __str__ goal is to be readable while __repr__ goal is to be unambigous
     def __repr__(self):
         reprString = f'SSHLogEntry({self.timestamp},{self.process_name},[{self.pid}],{self.message})'
         return reprString

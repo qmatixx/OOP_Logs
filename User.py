@@ -11,7 +11,7 @@ class SSHUser:
         self.last_login_date = last_login_date
         
     def validate(self):
-        print("Validating user: ", self.username)
+        # print("Validating user: ", self.username)
         pattern = r'^[a-z_][a-z0-9_-]{0,31}$'
         match = re.match(pattern, self.username)
         if match:
